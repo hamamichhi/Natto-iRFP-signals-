@@ -1,9 +1,7 @@
-# analysis.R for
 #
 # 
 # This work is licensed under a Creative Commons Attribution 4.0 International License.
 #
-setwd("D:/SynologyDocument/ベイズ推定勉強会/冬眠論文のコード/QRFP_KO_BW")
 
 library(tidyverse)
 library(rstan)
@@ -13,10 +11,9 @@ library(magrittr)
 library(lubridate)
 library(stringr)
 
-#inits 
 analysis.name<-"Natto" 
 datetime<-format(Sys.time(),"%Y%m%d%H%M%S") 
-#logfile<-gen.start.log(analysis.name/)
+
 
 
 # make folders
@@ -55,7 +52,7 @@ data<-list(N=nrow(df), MAX_W=10, X=floor(df$age), Y=df$weight, S=as.integer(df$s
 stanmodel <- stan_model(file=file.path("stan", "model_bw.stan"))
 
 ####################################
-# モデリングと結果の分析を行うコード
+# result and analysis
 ####################################
 
 analysis.name<-"Natto-iRFP"
@@ -71,14 +68,14 @@ calc.stats<-function(fit, pars){
   return(stats.df)
 }
 
-# モデリングと結果の分析を行うコード
+# result of modeling
 mcmc.file<-sprintf("%s.csv", analysis.name)
 fit <- sampling(stanmodel, data=data,
   iter=20000, warmup=5000, thin=1, seed=20230821, chain=1,
   sample_file=file.path("results","sample_file", mcmc.file))
 
 
-# 計算された統計情報を保存
+# Save computed statistics
 # output MCMC diagnostics
 color_scheme_set("viridis")
 post<- as.matrix(fit) # single chains 
@@ -189,7 +186,7 @@ print(p)
 
 dev.off()
 
-# plot timeseries 二つの群のグラフ
+# plot timeseries Graphs of two groups
 #for (lb in c("HVK", "LVK", "Normal")){
 pdf(file=file.path("figure",
                    sprintf(paste(lb,"ts.ststats_two_data.%s.%s.pdf",sep="_"), analysis.name, datetime)), 
@@ -214,7 +211,7 @@ dev.off()
 }
 
 
-# 適切にバランスを取った色を指定
+
 colors <- c("HCD" = "#2980B9", "HVK" = "#C0392B", "LVK" = "#27AE60", "Normal" = "#8E44AD")
 for (lb in c("HVK", "LVK", "Normal")) {
   pdf(file=file.path("figure",
@@ -226,10 +223,10 @@ for (lb in c("HVK", "LVK", "Normal")) {
   p <- p + geom_line(aes(x = week, y = `50%`, group = strain, color = strain), size = 0.2)
   p <- p + geom_ribbon(aes(x = week, ymin = `|0.89`, ymax = `0.89|`, group = strain, fill = strain), alpha = 0.4)
   p <- p + coord_cartesian(xlim = c(1, 10))
-  p <- p + scale_x_continuous(breaks = seq(1, 10, by = 1)) # 1週間ごとの刻み
+  p <- p + scale_x_continuous(breaks = seq(1, 10, by = 1)) # Weekly increments
   p <- p + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) # グリッドを消す
-  p <- p + scale_color_manual(values = colors) # 濃い色を適用
-  p <- p + scale_fill_manual(values = colors) # 濃い色を適用
+  p <- p + scale_color_manual(values = colors) # Apply darker color
+  p <- p + scale_fill_manual(values = colors) # Apply darker color
   p <- p + labs(y = "signal", x = "Time (week)")
   print(p)
   
