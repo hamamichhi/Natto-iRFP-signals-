@@ -200,9 +200,6 @@ p<-p+geom_ribbon(aes(x=week, ymin=`|0.89`, ymax=`0.89|`,
 p<-p+coord_cartesian(xlim=c(1,10))
 p <- p + scale_x_continuous(breaks = seq(1, 10, by = 1))
 p <- p + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
-
-#p<-p+scale_color_manual(values=QRFP_colors)
-#p<-p+scale_fill_manual(values=QRFP_colors)
 p<-p+labs(y="signal", x="Time (week)")
 print(p)
 
@@ -223,7 +220,7 @@ for (lb in c("HVK", "LVK", "Normal")) {
   p <- p + geom_ribbon(aes(x = week, ymin = `|0.89`, ymax = `0.89|`, group = strain, fill = strain), alpha = 0.4)
   p <- p + coord_cartesian(xlim = c(1, 10))
   p <- p + scale_x_continuous(breaks = seq(1, 10, by = 1)) # Weekly increments
-  p <- p + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) # グリッドを消す
+  p <- p + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) # Clear the grid
   p <- p + scale_color_manual(values = colors) # Apply darker color
   p <- p + scale_fill_manual(values = colors) # Apply darker color
   p <- p + labs(y = "signal", x = "Time (week)")
