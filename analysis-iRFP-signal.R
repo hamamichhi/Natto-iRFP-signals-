@@ -42,7 +42,6 @@ pdf(file=file.path("figure", sprintf("%s.raw.%s.pdf", analysis.name, datetime)),
 p<-ggplot(df)+theme_base
 p<-p+geom_point(aes(x=age, y=weight, color=strain),
 	shape=16, size=0.5, alpha=0.8)
-#p<-p+scale_color_manual(values=QRFP_colors)
 print(p)
 
 dev.off()
