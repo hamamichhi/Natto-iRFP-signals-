@@ -24,7 +24,7 @@ dir.create(path=file.path("results","sample_file"), showWarnings = FALSE, recurs
 # load dataset
 groups<-c("HCD","HVK","LVK","Normal")
 
-df<-read_csv(file.path("data","iRFP-signal.csv"))%>%
+df<-read_csv(file.path("iRFP-signal.csv"))%>%
 	gather(key, value, -Strain)%>%
 	transmute(strain=factor(str_remove(Strain,'[0-9].'), groups), 
 		age=as.numeric(key), weight=value)
@@ -48,7 +48,7 @@ dev.off()
 
 # prepare modeling
 data<-list(N=nrow(df), MAX_W=10, X=floor(df$age), Y=df$weight, S=as.integer(df$strain))
-stanmodel <- stan_model(file=file.path("stan", "model_bw.stan"))
+stanmodel <- stan_model(file=file.path("iRFP-signal.stan"))
 
 ####################################
 # result and analysis
